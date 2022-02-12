@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TodoEntity } from 'src/entities/todo.entity';
 import { Repository } from 'typeorm';
@@ -37,7 +41,12 @@ export class TodoService {
     return 'update';
   }
 
-  delete() {
-    return 'Delete';
+  delete(id: number) {
+    try {
+      this.todoRepo.delete({ id: id });
+      return { message: 'success' };
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 }
