@@ -24,7 +24,6 @@ export class TodoService {
     } catch (error) {
       throw new InternalServerErrorException();
     }
-    return 'Find all';
   }
 
   async create(todo: TodoDTO) {
@@ -37,7 +36,7 @@ export class TodoService {
     }
   }
 
-  update() {
+  update(toDo: TodoDTO) {
     return 'update';
   }
 

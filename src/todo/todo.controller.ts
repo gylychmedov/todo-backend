@@ -27,4 +27,9 @@ export class TodoController {
   deleteTodo(@Param('id') id: number) {
     return this.todoService.delete(id);
   }
+
+  @Post('/update/:id')
+  updateTodo(@Param('id') toDo: TodoDTO) {
+    return this.todoService.update(toDo);
+  }
 }
