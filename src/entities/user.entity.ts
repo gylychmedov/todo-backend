@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { Exclude } from 'class-transformer';
+import { classToPlain, Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { BeforeInsert, Column } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 import { AbstrackEntity } from './abstrack-entity';
+import bcrypt from 'bcryptjs';
 
-@Injectable()
+@Entity('users')
 export class UserEntity extends AbstrackEntity {
   @Column()
   @IsString()
@@ -12,9 +12,9 @@ export class UserEntity extends AbstrackEntity {
   @MinLength(2)
   username: string;
 
+  @Column({ unique: true })
   @IsNotEmpty()
   @IsEmail()
-  @Column()
   @IsString()
   @MinLength(4)
   email: string;
@@ -35,4 +35,17 @@ export class UserEntity extends AbstrackEntity {
   @IsNotEmpty()
   @Exclude()
   password: string;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  async comparePassword(attemt: string) {
+    return await bcrypt.compare(attemt, this.password);
+  }
+
+  toJSON() {
+    return classToPlain(this);
+  }
 }
